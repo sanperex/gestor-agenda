@@ -20,4 +20,13 @@
 - ERROR `flutter build apk --debug`: Gradle intenta autoinstalar piezas faltantes con sdkmanager.bat
   (cmdline-tools 23.0) y este se cae (0xC0000409). Faltan: plataforma android-36 (solo hay 37)
   y NDK 28.2.13676358 (lo pide Flutter 3.47). Solucion: instalarlas desde Android Studio SDK Manager.
-- Falta: instalar API 36 + NDK, recompilar; luego esqueleto backend.
+- API 36 + NDK instalados con `android sdk install` (cmdline-tools nuevas). APK debug compila OK.
+- Usuario pidio: "haz todo, yo solo configuro Mongo". Se construyo toda la parte A:
+  - Rama feature/auth-backend: backend Express 5 + Mongoose 9 (config, models, controllers, routes,
+    middlewares, utils). Prueba 21/21 con mongodb-memory-server (script en scratchpad, no en repo).
+  - Rama feature/auth-frontend: http, provider, flutter_secure_storage. core (ApiClient, tema, validadores),
+    features/auth (domain/data/presentation), lib/app (AuthGate, rutas, placeholder agenda), main.dart.
+    AndroidManifest: INTERNET en main; cleartext solo en debug. 17 tests OK. flutter analyze sin issues.
+  - Prueba real en web (build web + backend): registro OK, CORS OK, sesion persiste al recargar.
+- Nota: hay un mongod local escuchando en 127.0.0.1:27017 (no lo inicio Claude). Sirve para desarrollo local.
+- Falta: MONGODB_URI (usuario), PRs, Railway, README, prueba en emulador Android.
