@@ -1,0 +1,22 @@
+# --- Secretos: NUNCA al repositorio ---
+.env
+.env.*
+!.env.example
+
+# --- Node.js (backend) ---
+node_modules/
+npm-debug.log*
+
+# --- Flutter (frontend) ---
+# El proyecto Flutter trae su propio .gitignore; esto es respaldo.
+.dart_tool/
+build/
+
+# --- Editores y sistema operativo ---
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# --- Claude Code: configuracion local de cada PC ---
+.claude/settings.local.json
