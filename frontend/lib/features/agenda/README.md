@@ -14,4 +14,4 @@ El Aprendiz A no programa aqui.
 - Endpoint `GET /api/auth/me` para los datos del Perfil.
 - Ruta `/agenda`: a donde navega la app despues de un login exitoso.
 
-Los contratos completos estan en `.claude/decisiones/001-stack-y-arquitectura.md`.
+Guia completa (backend y Flutter): `.claude/docs/api-contract.md`.
