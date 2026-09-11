@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../domain/entities/task_summary.dart';
-import '../providers/task_provider.dart';
-import '../widgets/status_badge.dart';
+import '../../../agenda/domain/entities/task_summary.dart';
+import '../../../agenda/presentation/providers/task_provider.dart';
+import '../../../agenda/presentation/widgets/status_badge.dart';
+import '../providers/auth_provider.dart';
 
-/// Perfil del usuario (Aprendiz B).
+/// Perfil del usuario — pantalla del APRENDIZ B.
+///
+/// Vive en features/auth/ porque ahi la ubica la estructura del taller
+/// ("profile_page.dart (Aprendiz B)" dentro de auth/presentation/pages).
 /// Los datos salen del AuthProvider del Aprendiz A (que los trae de GET /api/auth/me),
-/// y el resumen de tareas del TaskProvider.
+/// y el resumen de tareas del TaskProvider de la agenda.
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 

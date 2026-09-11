@@ -11,7 +11,8 @@ Lista de agenda, formulario de tarea, perfil y CRUD de tareas contra `/api/tasks
 - `AgendaListPage` — la que muestra `AuthGate` tras el login. Busqueda, filtros por estado con conteo,
   orden (fecha / prioridad / titulo), completar con la casilla, detalle, editar y eliminar con confirmacion.
 - `TaskFormPage` — ruta `/task-form`. Sin argumento crea; con una `Task` como argumento la edita.
-- `ProfilePage` — ruta `/profile`. Datos del `AuthProvider` (A), resumen de tareas y cerrar sesion.
+- `ProfilePage` — ruta `/profile`. Es de B pero vive en `features/auth/presentation/pages/`, donde la
+  pone la estructura del taller. Datos del `AuthProvider` (A), resumen de tareas y cerrar sesion.
 
 ## Decisiones que conviene no deshacer
 - El formulario usa `SingleChildScrollView` y no `ListView`: `ListView` desmonta los campos fuera de

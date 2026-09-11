@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../features/agenda/domain/entities/task.dart';
-import '../features/agenda/presentation/pages/profile_page.dart';
 import '../features/agenda/presentation/pages/task_form_page.dart';
 import '../features/auth/presentation/pages/forgot_pass_page.dart';
+import '../features/auth/presentation/pages/profile_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 
 /// Rutas con nombre de la app (archivo COMPARTIDO).
