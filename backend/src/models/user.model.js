@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-// Coleccion "users". El _id que crea MongoDB es el userId que usara la coleccion tasks (Aprendiz B).
+// Coleccion "usuarios". El _id que crea MongoDB es el userId que usara la coleccion tasks (Aprendiz B).
 const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true, minlength: 2, maxlength: 50 },
@@ -29,4 +29,5 @@ userSchema.set('toJSON', {
   },
 });
 
-module.exports = model('User', userSchema);
+// Tercer parametro: nombre exacto de la coleccion en MongoDB Atlas.
+module.exports = model('User', userSchema, 'usuarios');
