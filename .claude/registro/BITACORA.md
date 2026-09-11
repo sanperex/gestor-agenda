@@ -30,3 +30,10 @@
   - Prueba real en web (build web + backend): registro OK, CORS OK, sesion persiste al recargar.
 - Nota: hay un mongod local escuchando en 127.0.0.1:27017 (no lo inicio Claude). Sirve para desarrollo local.
 - Falta: MONGODB_URI (usuario), PRs, Railway, README, prueba en emulador Android.
+- Atlas: cluster0.hs7qeez, base gestor_agenda, coleccion "usuarios" (creada por el usuario).
+  Modelo User apunta a "usuarios". MONGODB_URI puesta en backend/.env por el usuario. Backend conecta OK.
+- ERROR: `node --watch` reiniciaba el server a mitad de peticion (Windows marca cambios falsos en
+  node_modules) -> ECONNRESET. Fix: `--watch-path=src --watch-path=server.js` en script dev.
+- Pruebas contra Atlas: 12/12 OK. Usuario de prueba: prueba549219@gestor.com / nueva456.
+- Commit f7f658c en feature/auth-backend, mergeado a feature/auth-frontend. Ambas subidas.
+- Falta: PRs a develop, Railway, README, prueba en emulador Android.

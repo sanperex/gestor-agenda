@@ -8,7 +8,7 @@ Orden de fases. Marcar [x] al terminar cada una.
 - [x] F2  GitHub + main/develop
 - [x] F3  Contrato de la API (docs/api-contract.md)
 - [x] F4  Esqueletos: Express + proyecto Flutter (android, web)
-- [ ] F5  MongoDB Atlas (usuario) -> poner MONGODB_URI en backend/.env
+- [x] F5  MongoDB Atlas conectado (coleccion usuarios). Pruebas 12/12 contra Atlas
 - [x] F6  register / login / me + middleware JWT
 - [x] F7  Pruebas API (21 casos, Mongo en memoria). Repetir con Atlas + Thunder Client para evidencias
 - [x] F8  Recuperacion backend + pruebas

@@ -32,6 +32,8 @@ Task.find({ userId: req.userId });
 Task.create({ ...datos, userId: req.userId }); // userId NUNCA viene del cliente
 ```
 Modelo: `userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true }`.
+Colecciones en Atlas (base `gestor_agenda`): `usuarios` (A). Sugerido para B: `tareas`
+-> `model('Task', taskSchema, 'tareas')`.
 
 Flutter:
 - `context.read<ApiClient>()` -> `get/post/put/delete`. El token se agrega solo.
