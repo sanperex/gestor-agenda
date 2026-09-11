@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/providers/auth_provider.dart';
-import 'agenda_placeholder_page.dart';
+import '../features/agenda/presentation/pages/agenda_list_page.dart';
 
 /// "Portero" de la app: muestra una pantalla u otra segun el estado de la sesion.
 /// Al iniciar o cerrar sesion, cambia solo; las pantallas no navegan a mano.
@@ -17,8 +17,7 @@ class AuthGate extends StatelessWidget {
     return switch (status) {
       AuthStatus.checking => const Scaffold(body: Center(child: CircularProgressIndicator())),
       AuthStatus.unauthenticated => const LoginPage(),
-      // Aprendiz B: reemplazar por su pantalla de agenda (ej. const AgendaListPage()).
-      AuthStatus.authenticated => const AgendaPlaceholderPage(),
+      AuthStatus.authenticated => const AgendaListPage(), // Aprendiz B
     };
   }
 }
