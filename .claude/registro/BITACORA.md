@@ -20,4 +20,20 @@
 - ERROR `flutter build apk --debug`: Gradle intenta autoinstalar piezas faltantes con sdkmanager.bat
   (cmdline-tools 23.0) y este se cae (0xC0000409). Faltan: plataforma android-36 (solo hay 37)
   y NDK 28.2.13676358 (lo pide Flutter 3.47). Solucion: instalarlas desde Android Studio SDK Manager.
-- Falta: instalar API 36 + NDK, recompilar; luego esqueleto backend.
+- API 36 + NDK instalados con `android sdk install` (cmdline-tools nuevas). APK debug compila OK.
+- Usuario pidio: "haz todo, yo solo configuro Mongo". Se construyo toda la parte A:
+  - Rama feature/auth-backend: backend Express 5 + Mongoose 9 (config, models, controllers, routes,
+    middlewares, utils). Prueba 21/21 con mongodb-memory-server (script en scratchpad, no en repo).
+  - Rama feature/auth-frontend: http, provider, flutter_secure_storage. core (ApiClient, tema, validadores),
+    features/auth (domain/data/presentation), lib/app (AuthGate, rutas, placeholder agenda), main.dart.
+    AndroidManifest: INTERNET en main; cleartext solo en debug. 17 tests OK. flutter analyze sin issues.
+  - Prueba real en web (build web + backend): registro OK, CORS OK, sesion persiste al recargar.
+- Nota: hay un mongod local escuchando en 127.0.0.1:27017 (no lo inicio Claude). Sirve para desarrollo local.
+- Falta: MONGODB_URI (usuario), PRs, Railway, README, prueba en emulador Android.
+- Atlas: cluster0.hs7qeez, base gestor_agenda, coleccion "usuarios" (creada por el usuario).
+  Modelo User apunta a "usuarios". MONGODB_URI puesta en backend/.env por el usuario. Backend conecta OK.
+- ERROR: `node --watch` reiniciaba el server a mitad de peticion (Windows marca cambios falsos en
+  node_modules) -> ECONNRESET. Fix: `--watch-path=src --watch-path=server.js` en script dev.
+- Pruebas contra Atlas: 12/12 OK. Usuario de prueba: prueba549219@gestor.com / nueva456.
+- Commit f7f658c en feature/auth-backend, mergeado a feature/auth-frontend. Ambas subidas.
+- Falta: PRs a develop, Railway, README, prueba en emulador Android.
