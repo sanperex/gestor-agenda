@@ -5,7 +5,7 @@
   "main": "server.js",
   "private": true,
   "scripts": {
-    "dev": "node --watch --env-file-if-exists=.env server.js",
+    "dev": "node --watch-path=src --watch-path=server.js --env-file-if-exists=.env server.js",
     "start": "node server.js"
   },
   "engines": {
