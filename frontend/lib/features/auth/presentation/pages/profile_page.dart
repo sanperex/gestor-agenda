@@ -57,7 +57,10 @@ class ProfilePage extends StatelessWidget {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: Vivid.lavender,
+        // StackFit.expand: sin esto el Stack mide lo que su contenido, y con pocos datos o una
+        // pantalla alta la barra inferior queda flotando a media pantalla en vez de abajo.
         body: Stack(
+          fit: StackFit.expand,
           children: [
             SingleChildScrollView(
               padding: EdgeInsets.only(bottom: 130 + media.padding.bottom),
@@ -66,7 +69,9 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   Stack(
                     children: [
-                      const Positioned.fill(child: VividBackdrop()),
+                      // Termina 2 px antes del borde: la hoja lavanda lo tapa igual, y así no
+                      // asoma una línea índigo cuando el marco se escala a un tamaño fraccionario.
+                      const Positioned.fill(bottom: 2, child: VividBackdrop()),
                       const Positioned(
                         left: 0,
                         right: 0,

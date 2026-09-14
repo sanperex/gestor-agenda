@@ -119,7 +119,10 @@ class _TaskFormPageState extends State<TaskFormPage> {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: Vivid.lavender,
+        // StackFit.expand: sin esto el Stack mide lo que el formulario, y en una pantalla alta
+        // el botón de guardar queda a media pantalla en vez de pegado abajo.
         body: Stack(
+          fit: StackFit.expand,
           children: [
             Form(
               key: _formKey,
@@ -213,7 +216,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
     return Stack(
       children: [
-        const Positioned.fill(child: VividBackdrop()),
+        // Termina 2 px antes del borde para que no asome una línea bajo la hoja lavanda.
+        const Positioned.fill(bottom: 2, child: VividBackdrop()),
         const Positioned(
           left: 0,
           right: 0,

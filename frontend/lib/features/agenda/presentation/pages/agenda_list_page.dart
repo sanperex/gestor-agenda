@@ -388,7 +388,9 @@ class _Header extends StatelessWidget {
 
     // El índigo termina a media altura de la tarjeta destacada y la hoja lavanda
     // empieza ahí, con las esquinas redondeadas: la tarjeta queda montada entre las dos.
-    final colorBottom = task != null ? 80.0 : 0.0;
+    // Nunca llega justo al borde: con el marco escalado a un tamaño fraccionario asomaría
+    // una línea índigo de 1 px debajo de la hoja lavanda.
+    final colorBottom = task != null ? 80.0 : 2.0;
     final sheetHeight = task != null ? 110.0 : 30.0;
 
     return Stack(
