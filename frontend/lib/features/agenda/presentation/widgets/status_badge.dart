@@ -1,84 +1,122 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/theme/vivid.dart';
 import '../../domain/entities/task.dart';
 
-/// Colores de estado y prioridad EN UN SOLO LUGAR: si cada pantalla eligiera
-/// el suyo, el mismo estado se veria de dos colores y dejaria de significar algo.
-class TaskColors {
-  TaskColors._();
+/// Color e icono de cada estado EN UN SOLO LUGAR: si cada pantalla eligiera el suyo,
+/// el mismo estado se veria de dos colores y dejaria de significar algo.
+class TaskVisuals {
+  const TaskVisuals._(this.color, this.icon);
 
-  static const Color pending = Color(0xFFD97706); // ambar: espera a alguien
+  final Color color;
+  final IconData icon;
 
-  static Color status(TaskStatus s) => switch (s) {
-    TaskStatus.pending => pending,
-    TaskStatus.inProgress => AppColors.primary,
-    TaskStatus.completed => AppColors.success,
+  static const Color overdue = Vivid.red;
+  static const Color pending = Vivid.amber;
+  static const Color done = Vivid.green;
+
+  /// La vencida gana sobre el estado: una tarea pendiente que ya paso de fecha
+  /// necesita otra señal que una que todavia esta a tiempo.
+  static TaskVisuals of(Task task) {
+    if (task.isOverdue) return const TaskVisuals._(overdue, Icons.priority_high_rounded);
+    return forStatus(task.status);
+  }
+
+  static TaskVisuals forStatus(TaskStatus status) => switch (status) {
+    TaskStatus.pending => const TaskVisuals._(pending, Icons.schedule_rounded),
+    TaskStatus.inProgress => const TaskVisuals._(Vivid.accent, Icons.bolt_rounded),
+    TaskStatus.completed => const TaskVisuals._(done, Icons.check_rounded),
   };
 
-  static Color priority(TaskPriority p) => switch (p) {
-    TaskPriority.low => AppColors.textSecondary,
-    TaskPriority.medium => AppColors.primary,
-    TaskPriority.high => AppColors.error,
+  static Color priorityColor(TaskPriority p) => switch (p) {
+    TaskPriority.low => Vivid.muted,
+    TaskPriority.medium => Vivid.accent,
+    TaskPriority.high => overdue,
   };
+}
 
-  static IconData statusIcon(TaskStatus s) => switch (s) {
-    TaskStatus.pending => Icons.schedule,
-    TaskStatus.inProgress => Icons.autorenew,
-    TaskStatus.completed => Icons.check_circle,
-  };
+/// Cuadro con el icono del estado sobre un fondo suave de su color, al inicio de cada tarjeta.
+class StatusTile extends StatelessWidget {
+  const StatusTile({super.key, required this.task, this.size = 46});
+
+  final Task task;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final v = TaskVisuals.of(task);
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(color: Vivid.soft(v.color), borderRadius: BorderRadius.circular(size / 3)),
+      child: Icon(v.icon, color: v.color, size: size * 0.5),
+    );
+  }
 }
 
 /// Pastilla con el estado de una tarea.
 class StatusBadge extends StatelessWidget {
-  const StatusBadge({super.key, required this.status});
+  const StatusBadge({super.key, required this.status, this.onColor = false});
 
   final TaskStatus status;
 
+  /// true cuando va sobre un fondo de color (el banner del detalle).
+  final bool onColor;
+
   @override
   Widget build(BuildContext context) {
-    final color = TaskColors.status(status);
+    final color = TaskVisuals.forStatus(status).color;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      height: 28,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        // El mismo color con poca opacidad: se lee bien sin mantener otra paleta.
-        color: color.withValues(alpha: 0.12),
+        color: onColor ? Colors.white.withValues(alpha: 0.16) : Vivid.soft(color),
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(TaskColors.statusIcon(status), size: 12, color: color),
-          const SizedBox(width: 4),
-          Text(
-            status.label,
-            style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
-          ),
-        ],
+      alignment: Alignment.center,
+      child: Text(
+        status.label.toUpperCase(),
+        style: TextStyle(
+          color: onColor ? Colors.white : color,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.6,
+        ),
       ),
     );
   }
 }
 
-/// Prioridad como banderita. Va aparte del estado: una tarea puede ser Alta y estar completada.
-class PriorityLabel extends StatelessWidget {
-  const PriorityLabel({super.key, required this.priority});
+/// Pastilla de prioridad. Va aparte del estado: una tarea puede ser Alta y estar completada.
+class PriorityPill extends StatelessWidget {
+  const PriorityPill({super.key, required this.priority, this.onColor = false, this.showLabelPrefix = false});
 
   final TaskPriority priority;
+  final bool onColor;
+  final bool showLabelPrefix;
 
   @override
   Widget build(BuildContext context) {
-    final color = TaskColors.priority(priority);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.flag, size: 13, color: color),
-        const SizedBox(width: 2),
-        Text(
-          priority.label,
-          style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
-        ),
-      ],
+    final color = onColor ? Colors.white : TaskVisuals.priorityColor(priority);
+    final text = showLabelPrefix ? 'Prioridad ${priority.label.toLowerCase()}' : priority.label;
+    return Container(
+      height: onColor ? 28 : 22,
+      padding: EdgeInsets.symmetric(horizontal: onColor ? 12 : 9),
+      decoration: BoxDecoration(
+        color: onColor ? Colors.white.withValues(alpha: 0.16) : Vivid.soft(color),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.flag_rounded, size: onColor ? 13 : 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w800),
+          ),
+        ],
+      ),
     );
   }
 }

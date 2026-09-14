@@ -49,6 +49,21 @@ String dueLabel(DateTime d, {DateTime? now}) {
 /// "viernes 20 de septiembre de 2026"
 String longDateLabel(DateTime d) => '${_weekdays[d.weekday - 1]} ${d.day} de ${_monthsLong[d.month - 1]} de ${d.year}';
 
+/// "Viernes 11 de septiembre" (cabecera de la agenda: sin año, con mayúscula inicial).
+String headerDateLabel(DateTime d) {
+  final day = _weekdays[d.weekday - 1];
+  return '${day[0].toUpperCase()}${day.substring(1)} ${d.day} de ${_monthsLong[d.month - 1]}';
+}
+
+/// "VIE" (selector de días del formulario).
+String weekdayShort(DateTime d) => const ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'][d.weekday - 1];
+
+/// "11 sept" (fecha corta, sin hora).
+String shortDateLabel(DateTime d) => '${d.day} ${_months[d.month - 1]}';
+
+/// Días entre la fecha y hoy, por día calendario (0 = hoy, 1 = mañana, -1 = ayer).
+int daysFromToday(DateTime d, {DateTime? now}) => _dayOnly(d).difference(_dayOnly(now ?? DateTime.now())).inDays;
+
 // Se compara por dia calendario y no restando horas: a las 11 p. m., algo de mañana
 // a la 1 a. m. esta a 2 horas pero es "Mañana", no "Hoy".
 DateTime _dayOnly(DateTime d) => DateTime(d.year, d.month, d.day);

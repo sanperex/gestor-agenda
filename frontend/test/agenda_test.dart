@@ -201,10 +201,36 @@ void main() {
 
       expect(find.text('Hola, Ana María Torres'), findsOneWidget);
       expect(find.text('Tienes 2 tareas por hacer'), findsOneWidget);
-      expect(find.text('Todas (3)'), findsOneWidget);
-      expect(find.text('Completada (1)'), findsOneWidget);
+      expect(find.text('Todas'), findsOneWidget);
+      expect(find.text('Hechas'), findsOneWidget);
       expect(find.text('Entregar informe'), findsOneWidget);
       expect(find.text('Reunión de equipo'), findsOneWidget);
+    });
+
+    testWidgets('agrupa por día y separa la tarea en curso', (tester) async {
+      final now = DateTime.now();
+      await _pumpAgenda(
+        tester,
+        tasks: [
+          sampleTask(id: '1', title: 'Atrasada', dueDate: now.subtract(const Duration(days: 2))),
+          sampleTask(id: '2', title: 'Para mañana', dueDate: DateTime(now.year, now.month, now.day + 1, 10)),
+          sampleTask(
+            id: '3',
+            title: 'La de ahora',
+            dueDate: now.add(const Duration(hours: 2)),
+            status: TaskStatus.inProgress,
+          ),
+        ],
+      );
+
+      expect(find.textContaining('EN CURSO'), findsOneWidget);
+      expect(find.text('La de ahora'), findsOneWidget, reason: 'la destacada no se repite en la lista');
+
+      // La lista se construye a medida que se ve: hay que bajar hasta los grupos.
+      final list = find.byType(Scrollable).first;
+      await tester.scrollUntilVisible(find.text('Vencidas'), 150, scrollable: list);
+      await tester.scrollUntilVisible(find.text('Mañana'), 150, scrollable: list);
+      expect(find.text('Para mañana'), findsOneWidget);
     });
 
     testWidgets('sin tareas invita a crear la primera', (tester) async {
@@ -215,12 +241,17 @@ void main() {
     testWidgets('el filtro muestra solo ese estado y tocarlo otra vez lo quita', (tester) async {
       await _pumpAgenda(tester);
 
-      await tester.tap(find.text('Completada (1)'));
+      // Los filtros se desplazan en horizontal; el ultimo puede quedar fuera de la pantalla.
+      await tester.ensureVisible(find.text('Hechas'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Hechas'));
       await tester.pumpAndSettle();
       expect(find.text('Comprar materiales'), findsOneWidget);
       expect(find.text('Entregar informe'), findsNothing);
 
-      await tester.tap(find.text('Completada (1)'));
+      await tester.ensureVisible(find.text('Hechas'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Hechas'));
       await tester.pumpAndSettle();
       expect(find.text('Entregar informe'), findsOneWidget);
     });
@@ -228,13 +259,12 @@ void main() {
     testWidgets('crear una tarea desde el formulario la agrega a la lista', (tester) async {
       await _pumpAgenda(tester, tasks: []);
 
-      await tester.tap(find.text('Nueva tarea'));
+      await tester.tap(find.byTooltip('Nueva tarea'));
       await tester.pumpAndSettle();
-      expect(find.widgetWithText(FilledButton, 'Crear tarea'), findsOneWidget);
+      expect(find.text('Crear tarea'), findsOneWidget);
 
-      await tester.enterText(find.widgetWithText(TextFormField, 'Título'), 'Sustentar el taller');
-      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Crear tarea'));
-      await tester.tap(find.widgetWithText(FilledButton, 'Crear tarea'));
+      await tester.enterText(find.byKey(const ValueKey('task-title')), 'Sustentar el taller');
+      await tester.tap(find.text('Crear tarea'));
       await tester.pumpAndSettle();
 
       expect(find.text('Sustentar el taller'), findsOneWidget);
@@ -244,10 +274,9 @@ void main() {
     testWidgets('el formulario no deja guardar sin título', (tester) async {
       await _pumpAgenda(tester, tasks: []);
 
-      await tester.tap(find.text('Nueva tarea'));
+      await tester.tap(find.byTooltip('Nueva tarea'));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Crear tarea'));
-      await tester.tap(find.widgetWithText(FilledButton, 'Crear tarea'));
+      await tester.tap(find.text('Crear tarea'));
       await tester.pump();
 
       expect(find.text('Escribe un título'), findsOneWidget);
@@ -256,26 +285,25 @@ void main() {
     testWidgets('si la API rechaza, el formulario sigue abierto con lo escrito', (tester) async {
       final repo = await _pumpAgenda(tester, tasks: []);
 
-      await tester.tap(find.text('Nueva tarea'));
+      await tester.tap(find.byTooltip('Nueva tarea'));
       await tester.pumpAndSettle();
-      await tester.enterText(find.widgetWithText(TextFormField, 'Título'), 'Algo');
+      await tester.enterText(find.byKey(const ValueKey('task-title')), 'Algo');
       repo.failNextWith = 'La fecha no es válida';
-      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Crear tarea'));
-      await tester.tap(find.widgetWithText(FilledButton, 'Crear tarea'));
+      await tester.tap(find.text('Crear tarea'));
       await tester.pumpAndSettle();
 
       expect(find.text('La fecha no es válida'), findsOneWidget);
-      expect(find.widgetWithText(FilledButton, 'Crear tarea'), findsOneWidget, reason: 'no se cerro');
+      expect(find.text('Crear tarea'), findsOneWidget, reason: 'no se cerro');
       expect(find.text('Algo'), findsOneWidget, reason: 'no se perdio lo escrito');
     });
 
-    testWidgets('eliminar pide confirmación y quita la tarea', (tester) async {
+    testWidgets('eliminar desde el detalle pide confirmación y quita la tarea', (tester) async {
       await _pumpAgenda(
         tester,
         tasks: [sampleTask(id: '1', title: 'Tarea a borrar')],
       );
 
-      await tester.tap(find.byTooltip('Acciones'));
+      await tester.tap(find.text('Tarea a borrar'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Eliminar'));
       await tester.pumpAndSettle();
@@ -287,18 +315,30 @@ void main() {
       expect(find.text('Tarea eliminada'), findsOneWidget);
     });
 
-    testWidgets('la casilla marca la tarea como completada', (tester) async {
+    testWidgets('el círculo de la tarjeta la marca como completada', (tester) async {
       await _pumpAgenda(
         tester,
         tasks: [sampleTask(id: '1', title: 'Llamar al instructor')],
       );
 
-      await tester.tap(find.byType(Checkbox));
+      await tester.tap(find.byTooltip('Completar'));
       await tester.pumpAndSettle();
 
-      final checkbox = tester.widget<Checkbox>(find.byType(Checkbox));
-      expect(checkbox.value, isTrue);
+      expect(find.byTooltip('Marcar como pendiente'), findsOneWidget);
       expect(find.text('Todo al día'), findsOneWidget);
+    });
+
+    testWidgets('deslizar a la derecha completa la tarea', (tester) async {
+      await _pumpAgenda(
+        tester,
+        tasks: [sampleTask(id: '1', title: 'Deslizame')],
+      );
+
+      await tester.drag(find.text('Deslizame'), const Offset(320, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.byTooltip('Marcar como pendiente'), findsOneWidget);
+      expect(find.text('Deslizame'), findsOneWidget, reason: 'completar no la saca de la lista');
     });
 
     testWidgets('el perfil muestra nombre, correo, iniciales y el resumen', (tester) async {
@@ -310,7 +350,7 @@ void main() {
       expect(find.text('AM'), findsOneWidget);
       expect(find.text('ana@test.com'), findsWidgets);
       expect(find.text('Pendientes'), findsOneWidget);
-      expect(find.widgetWithText(OutlinedButton, 'Cerrar sesión'), findsOneWidget);
+      expect(find.text('Cerrar sesión'), findsOneWidget);
     });
   });
 }

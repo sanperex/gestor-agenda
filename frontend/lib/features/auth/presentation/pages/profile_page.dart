@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../app/routes.dart';
+import '../../../../core/theme/vivid.dart';
+import '../../../../core/widgets/motion.dart';
+import '../../../../core/widgets/vivid_backdrop.dart';
 import '../../../agenda/domain/entities/task_summary.dart';
 import '../../../agenda/presentation/providers/task_provider.dart';
-import '../../../agenda/presentation/widgets/status_badge.dart';
+import '../../../agenda/presentation/widgets/agenda_bottom_bar.dart';
 import '../providers/auth_provider.dart';
 
 /// Perfil del usuario — pantalla del APRENDIZ B.
@@ -27,7 +31,7 @@ class ProfilePage extends StatelessWidget {
           TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancelar')),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            style: TextButton.styleFrom(foregroundColor: Vivid.red),
             child: const Text('Cerrar sesión'),
           ),
         ],
@@ -46,79 +50,168 @@ class ProfilePage extends StatelessWidget {
     final user = context.watch<AuthProvider>().user;
     final summary = context.select<TaskProvider, TaskSummary>((p) => p.summary);
     final name = user?.name ?? '';
+    final media = MediaQuery.of(context);
+    final percent = summary.total == 0 ? 0 : (summary.completed * 100 / summary.total).round();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mi perfil')),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: Vivid.lavender,
+        body: Stack(
           children: [
-            const SizedBox(height: 8),
-            Center(
-              child: CircleAvatar(
-                radius: 44,
-                backgroundColor: AppColors.info,
-                child: Text(
-                  _initials(name),
-                  style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: AppColors.primary),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(name, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineSmall),
-            Text(
-              user?.email ?? '',
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 24),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Mis tareas', style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 12),
-                    Row(
+            SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: 130 + media.padding.bottom),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Stack(
+                    children: [
+                      const Positioned.fill(child: VividBackdrop()),
+                      const Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        height: 30,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Vivid.lavender,
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20, media.padding.top + 12, 20, 54),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 44,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Mi perfil',
+                                  style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Entrance(
+                              child: Container(
+                                width: 92,
+                                height: 92,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.16),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.35), width: 3),
+                                ),
+                                child: Text(
+                                  _initials(name),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            Entrance(
+                              delay: const Duration(milliseconds: 80),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    name,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    user?.email ?? '',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _Stat(label: 'Total', value: summary.total, color: AppColors.primary),
-                        _Stat(label: 'Pendientes', value: summary.pending, color: TaskColors.pending),
-                        _Stat(label: 'En progreso', value: summary.inProgress, color: AppColors.primary),
-                        _Stat(label: 'Hechas', value: summary.completed, color: AppColors.success),
+                        Entrance(
+                          delay: const Duration(milliseconds: 140),
+                          child: _ProgressCard(percent: percent, summary: summary),
+                        ),
+                        const SizedBox(height: 12),
+                        Entrance(
+                          delay: const Duration(milliseconds: 200),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: _Stat(label: 'Pendientes', value: summary.pending, color: Vivid.amber),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _Stat(label: 'En curso', value: summary.inProgress, color: Vivid.accent),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _Stat(label: 'Hechas', value: summary.completed, color: Vivid.green),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Entrance(
+                          delay: const Duration(milliseconds: 260),
+                          child: Pressable(
+                            onTap: () => _logout(context),
+                            semanticLabel: 'Cerrar sesión',
+                            child: Container(
+                              height: 54,
+                              decoration: BoxDecoration(
+                                color: Vivid.soft(Vivid.red),
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.logout_rounded, color: Vivid.red, size: 20),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Cerrar sesión',
+                                    style: TextStyle(color: Vivid.red, fontSize: 16, fontWeight: FontWeight.w800),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Card(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.badge_outlined),
-                    title: const Text('Nombre'),
-                    subtitle: Text(name),
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(Icons.email_outlined),
-                    title: const Text('Correo'),
-                    subtitle: Text(user?.email ?? ''),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            OutlinedButton.icon(
-              onPressed: () => _logout(context),
-              icon: const Icon(Icons.logout),
-              label: const Text('Cerrar sesión'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.error,
-                side: const BorderSide(color: AppColors.error),
-                minimumSize: const Size.fromHeight(52),
+            Positioned(
+              left: 20,
+              right: 20,
+              bottom: 14 + media.padding.bottom,
+              child: AgendaBottomBar(
+                current: AgendaTab.profile,
+                onAgenda: () => Navigator.of(context).maybePop(),
+                onAdd: () => Navigator.of(context).pushNamed(AppRoutes.taskForm),
+                onProfile: () {},
               ),
             ),
           ],
@@ -135,6 +228,98 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
+class _ProgressCard extends StatelessWidget {
+  const _ProgressCard({required this.percent, required this.summary});
+
+  final int percent;
+  final TaskSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final animate = !MediaQuery.of(context).disableAnimations;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(color: Vivid.night, borderRadius: BorderRadius.circular(22)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'TU PROGRESO',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  '${summary.completed} de ${summary.total} tareas',
+                  textAlign: TextAlign.right,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CountUp(
+                value: percent,
+                suffix: ' %',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  height: 1,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -1,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text('completado', style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 14)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: SizedBox(
+              height: 10,
+              child: Stack(
+                children: [
+                  Container(color: Colors.white.withValues(alpha: 0.12)),
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: percent / 100),
+                    duration: animate ? const Duration(milliseconds: 1200) : Duration.zero,
+                    curve: Curves.easeOutCubic,
+                    builder: (_, value, _) => FractionallySizedBox(
+                      widthFactor: value,
+                      child: Container(color: Color.lerp(Vivid.accent, Colors.white, 0.3)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _Stat extends StatelessWidget {
   const _Stat({required this.label, required this.value, required this.color});
 
@@ -144,18 +329,22 @@ class _Stat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '$value',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: color),
+          CountUp(
+            value: value,
+            style: TextStyle(color: color, fontSize: 28, height: 1, fontWeight: FontWeight.w800),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 6),
           Text(
             label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Vivid.muted, fontSize: 12, fontWeight: FontWeight.w700),
           ),
         ],
       ),
