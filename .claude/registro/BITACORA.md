@@ -36,4 +36,8 @@
   node_modules) -> ECONNRESET. Fix: `--watch-path=src --watch-path=server.js` en script dev.
 - Pruebas contra Atlas: 12/12 OK. Usuario de prueba: prueba549219@gestor.com / nueva456.
 - Commit f7f658c en feature/auth-backend, mergeado a feature/auth-frontend. Ambas subidas.
-- Falta: PRs a develop, Railway, README, prueba en emulador Android.
+- Usuario probo la app contra el backend con Atlas: funciona.
+- PRs #1 (auth-backend) y #2 (auth-frontend) se fusionaron a MAIN (GitHub usa main como destino por
+  defecto). develop se adelanto a main con fast-forward (`git fetch origin main:develop`), sin perder nada.
+  Pendiente: usuario cambia la rama por defecto de GitHub a develop.
+- Falta: Railway, README.
