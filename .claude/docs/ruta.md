@@ -16,7 +16,7 @@ Orden de fases. Marcar [x] al terminar cada una.
 - [x] F10 Capas data/domain + ApiClient + token
 - [x] F11 Flutter <-> API + estado de sesion
 - [~] F12 Pruebas Flutter: 17 tests + web real OK. Falta probar en emulador Android con backend
-- [ ] F13 Backend en Railway
+- [~] F13 Backend en Vercel (serverless): api/index.js + vercel.json listos y probados en local
 - [ ] F14 Integracion con B (B monta su parte despues)
-- [ ] F15 Flutter Web en Railway + release -> main
+- [ ] F15 Flutter Web en Vercel (build local + vercel CLI) + release -> main
 - [ ] F16 README + evidencias

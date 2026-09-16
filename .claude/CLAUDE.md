@@ -29,7 +29,7 @@ cd frontend
 flutter pub get
 flutter run -d edge          # web (no hay Chrome; Edge funciona)
 flutter run -d emulator-5554 # Android (emulador Pixel_8); usa http://10.0.2.2:3000
-flutter run --dart-define=API_URL=https://<api>.up.railway.app   # apuntar a Railway
+flutter run --dart-define=API_URL=https://<api>.vercel.app   # apuntar a la API desplegada
 flutter test                 # 17 pruebas
 ```
 
@@ -37,4 +37,4 @@ flutter test                 # 17 pruebas
 - Backend auth completo y probado (21/21 casos con MongoDB en memoria).
 - Flutter auth completo: login, registro, recuperacion (2 pasos), sesion guardada, logout. 17 tests OK.
 - Probado de punta a punta en web: registro -> agenda -> recargar mantiene sesion.
-- Falta: usuario pone MONGODB_URI (Atlas), PRs a develop, despliegue Railway, README.
+- Falta: despliegue en Vercel (backend serverless + web) y README con links.
