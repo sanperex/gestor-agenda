@@ -41,3 +41,12 @@
   defecto). develop se adelanto a main con fast-forward (`git fetch origin main:develop`), sin perder nada.
   Pendiente: usuario cambia la rama por defecto de GitHub a develop.
 - Falta: Railway, README.
+
+## 2026-09-16
+- Usuario pidio desplegar en Vercel (no Railway). Rama feature/deploy-vercel.
+- Nuevo: backend/api/index.js (funcion serverless, cachea la conexion) y backend/vercel.json
+  (reescribe todo a /api). db.js: maxPoolSize 5. server.js sigue siendo el arranque local.
+- Probado con un simulador local (http server llamando al handler) contra Atlas: 12/12 OK.
+- Decision documentada en decisiones/002-despliegue-vercel.md.
+- Falta: usuario crea los 2 proyectos en Vercel (backend desde GitHub, frontend con CLI), variables
+  de entorno, rebuild del frontend con --dart-define=API_URL, README.
