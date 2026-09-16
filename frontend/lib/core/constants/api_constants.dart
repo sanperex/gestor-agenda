@@ -18,7 +18,8 @@ class ApiConstants {
     return 'http://localhost:3000';
   }
 
-  static const Duration timeout = Duration(seconds: 15);
+  // 40 s: en el plan gratis de Render el servidor se duerme y la primera peticion tarda.
+  static const Duration timeout = Duration(seconds: 40);
 
   // Autenticacion (Aprendiz A)
   static const String register = '/api/auth/register';
