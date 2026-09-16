@@ -1,0 +1,48 @@
+# Blueprint de Render: crea los dos servicios del proyecto de una sola vez.
+# En Render: New > Blueprint > elegir este repositorio. Paso a paso en DEPLOY_RENDER.md.
+services:
+  # --- API (Express + MongoDB Atlas) ---
+  - type: web
+    name: gestor-agenda-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    # Responde 200 cuando la API esta arriba; Render la usa para saber si el despliegue salio bien.
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Cadena de conexion de MongoDB Atlas. La escribe quien despliega; nunca va al repositorio.
+      - key: MONGODB_URI
+        sync: false
+      # Render genera una clave aleatoria larga.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      # Al terminar, cambiar por la URL de la app web (ver DEPLOY_RENDER.md, paso 5).
+      - key: CORS_ORIGIN
+        value: "*"
+      # Demo academica: forgot-password devuelve el codigo en la respuesta.
+      - key: RESET_CODE_DEMO
+        value: "true"
+
+  # --- App web (Flutter compilado a HTML/JS, sitio estatico) ---
+  - type: web
+    name: gestor-agenda-web
+    runtime: static
+    rootDir: frontend
+    # Render no trae Flutter: el script lo descarga y compila con la URL de la API.
+    buildCommand: bash render-build.sh
+    staticPublishPath: build/web
+    envVars:
+      # URL publica de la API, por ejemplo https://gestor-agenda-api.onrender.com (sin / al final).
+      - key: API_URL
+        sync: false
+    routes:
+      # Cualquier ruta sirve la app: asi recargar la pagina no da 404.
+      - type: rewrite
+        source: /*
+        destination: /index.html
