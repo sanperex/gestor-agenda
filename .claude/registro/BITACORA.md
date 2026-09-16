@@ -50,3 +50,8 @@
 - Decision documentada en decisiones/002-despliegue-vercel.md.
 - Falta: usuario crea los 2 proyectos en Vercel (backend desde GitHub, frontend con CLI), variables
   de entorno, rebuild del frontend con --dart-define=API_URL, README.
+- Cambio de plataforma: el backend va a RENDER (no Vercel). Rama feature/deploy-render desde main.
+  Nuevo `render.yaml` (rootDir backend, npm ci / npm start, healthCheckPath /api/health,
+  MONGODB_URI y JWT_SECRET con sync:false). No hizo falta tocar el codigo del backend.
+  ApiClient: timeout 15 s -> 40 s por el "sueno" del plan gratis de Render.
+  Decision en decisiones/003-despliegue-render.md. Los archivos de Vercel se quedan como alternativa.

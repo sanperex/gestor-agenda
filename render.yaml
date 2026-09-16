@@ -1,0 +1,22 @@
+# Blueprint de Render. Define el servicio del backend.
+# Las variables con "sync: false" NO se guardan aqui: se escriben en el panel de Render.
+services:
+  - type: web
+    name: gestor-agenda-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: RESET_CODE_DEMO
+        value: "true"
