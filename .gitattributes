@@ -1,0 +1,3 @@
+# Los scripts de shell se ejecutan en Linux (Render): deben quedar con saltos de linea LF.
+# Sin esto, al hacer commit desde Windows podrian quedar en CRLF y fallar con "$'\r': command not found".
+*.sh text eol=lf
