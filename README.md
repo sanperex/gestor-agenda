@@ -16,7 +16,7 @@ datos en la nube, autenticación con JWT y despliegue público, trabajando en pa
 |---|---|
 | API (backend) | https://gestor-agenda-api.onrender.com |
 | Estado de la API | https://gestor-agenda-api.onrender.com/api/health |
-| App web | _(completar al desplegar el Static Site)_ |
+| App web | https://gestor-agenda.onrender.com/ |
 | Repositorio | https://github.com/sanperex/gestor-agenda |
 
 > La API está en el plan gratuito de Render: si nadie la usa por 15 minutos se duerme, y la primera
