@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "node --watch-path=src --watch-path=server.js --env-file-if-exists=.env server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:tasks": "node --test tests/tasks.test.js"
   },
   "engines": {
     "node": ">=22"
