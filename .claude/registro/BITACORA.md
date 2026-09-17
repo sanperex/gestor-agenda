@@ -55,3 +55,12 @@
   MONGODB_URI y JWT_SECRET con sync:false). No hizo falta tocar el codigo del backend.
   ApiClient: timeout 15 s -> 40 s por el "sueno" del plan gratis de Render.
   Decision en decisiones/003-despliegue-render.md. Los archivos de Vercel se quedan como alternativa.
+- API en Render OK: https://gestor-agenda-api.onrender.com (health 200, db conectada). 10/12 pruebas;
+  las 2 que fallan son porque falta RESET_CODE_DEMO=true en el panel de Render (no es bug).
+- HALLAZGO: el PR #3 (feature/agenda, Aprendiz B) se fusiono a main y luego el PR #9 lo REVIRTIO.
+  Por eso main tenia solo la parte A. El trabajo de B estaba intacto en origin/feature/agenda.
+  Arreglo: rama restore/agenda = revert del revert (commit "Reapply..."). Conflicto solo en render.yaml:
+  se conservo la version de B (define API + sitio estatico web con render-build.sh).
+  Verificado junto: flutter analyze sin issues y 38 tests OK (17 de A + 21 de B).
+- Aviso de seguridad dado al usuario: la contrasena de Atlas quedo visible en una captura del chat;
+  se le pidio rotarla en Database Access y actualizar .env y Render.
