@@ -270,17 +270,4 @@ El archivo [`render.yaml`](render.yaml) describe los dos servicios de Render (la
 En resumen: Render lee `render.yaml`, crea los servicios, pide `MONGODB_URI` y `API_URL`, y cada vez que
 se fusiona algo a `main` vuelve a desplegar solo.
 
-## Evidencias
 
-_(guardar las capturas en `docs/evidencias/` y enlazarlas aquí)_
-
-- [ ] Registro e inicio de sesión desde la app
-- [ ] Recuperación de contraseña
-- [ ] Lista de tareas: crear, editar y completar
-- [ ] Perfil del usuario
-- [ ] Colección `usuarios` en Atlas, con la contraseña guardada como hash
-- [ ] Colección `tareas` en Atlas, con su `userId`
-- [ ] Pruebas de la API en Thunder Client o Postman
-- [ ] `flutter test` en verde
-- [ ] Pull Requests del repositorio
-- [ ] Servicios desplegados en Render
