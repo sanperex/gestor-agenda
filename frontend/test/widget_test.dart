@@ -15,6 +15,8 @@ import 'package:gestor_agenda/features/auth/domain/usecases/register_usecase.dar
 import 'package:gestor_agenda/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:gestor_agenda/features/auth/presentation/providers/auth_provider.dart';
 
+import 'fakes/fake_task_repository.dart';
+
 /// Repositorio falso: permite probar las pantallas sin backend.
 class FakeAuthRepository implements AuthRepository {
   static const validEmail = 'ana@test.com';
@@ -60,7 +62,16 @@ Future<void> pumpApp(WidgetTester tester) async {
     logout: LogoutUseCase(repo),
   );
   await provider.checkSession();
-  await tester.pumpWidget(ChangeNotifierProvider.value(value: provider, child: const GestorAgendaApp()));
+  await tester.pumpWidget(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: provider),
+        // Aprendiz B: la agenda (pantalla despues del login) necesita su provider.
+        ChangeNotifierProvider.value(value: buildTaskProvider(FakeTaskRepository())),
+      ],
+      child: const GestorAgendaApp(),
+    ),
+  );
   await tester.pumpAndSettle();
 }
 
