@@ -3,7 +3,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const { corsOrigin } = require('./config/env');
 const authRoutes = require('./routes/auth.routes');
-const taskRoutes = require('./routes/task.routes');
 const { notFound, errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
@@ -18,7 +17,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes); // Aprendiz A
-app.use('/api/tasks', taskRoutes); // Aprendiz B
+// Aprendiz B: app.use('/api/tasks', taskRoutes);
 
 app.use(notFound);
 app.use(errorHandler); // siempre al final

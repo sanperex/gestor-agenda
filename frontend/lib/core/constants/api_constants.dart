@@ -27,7 +27,5 @@ class ApiConstants {
   static const String forgotPassword = '/api/auth/forgot-password';
   static const String resetPassword = '/api/auth/reset-password';
 
-  // Tareas (Aprendiz B)
-  static const String tasks = '/api/tasks';
-  static const String taskSummary = '/api/tasks/summary';
+  // Tareas (Aprendiz B): agregar aqui, ej. static const String tasks = '/api/tasks';
 }
